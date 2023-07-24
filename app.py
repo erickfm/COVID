@@ -3,7 +3,7 @@ import pandas as pd
 from dashboard.constants import github_image_path
 import os
 
-from dashboard.functions import get_mapbox, get_time_series
+from dashboard.functions import get_mapbox, get_time_series, get_3D_scatter
 from dashboard.constants import margins_css
 
 st.set_page_config(page_title='COVID-19 Dashboard', page_icon="🌎", layout="wide", initial_sidebar_state='collapsed')
@@ -29,8 +29,8 @@ if main_page:
     col_2top = col_2.container()
     col_2a, col_2b, col_2c, col_2d = col_2.columns([15, 15, 10, 8])
     col_2bottom = col_2.container()
-    size = col_1a.selectbox('size', ['Fatality Rate', 'Deaths', 'Confirmed Cases'], index=1)
-    color = col_1b.selectbox('color', ['Fatality Rate', 'Deaths', 'Confirmed Cases'], index=0)
+    size = col_1a.selectbox('size', ['Fatality Rate', 'Deaths', 'Confirmed Cases', 'Daily Fatality Rate'], index=1)
+    color = col_1b.selectbox('color', ['Fatality Rate', 'Deaths', 'Confirmed Cases', 'Daily Fatality Rate'], index=0)
     county_state = col_2a.selectbox('County', confirmed_cases_data['Admin2'] + ', ' + confirmed_cases_data['Province_State'], index=234)
     dataset = col_2c.selectbox('Dataset', ['Deaths', 'Cases'], index=1)
     agg_option = col_2b.selectbox('Aggregation', ['Cumulative', 'Daily', 'Daily Rolling Average'])
@@ -75,6 +75,9 @@ if main_page:
             table_height = 400
     col_2top.dataframe(table, use_container_width=True, hide_index=True, height=table_height)
     col_2bottom.plotly_chart(fig_ts, use_container_width=True)
+    fig_scatter = get_3D_scatter(data)
+    st.write('### Fatality Rate Correlations')
+    st.plotly_chart(fig_scatter, use_container_width=True)
 
 
 if about_page:
